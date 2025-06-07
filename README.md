@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberX Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --text-color: #ecf0f1;
+            --light-text: #bdc3c7;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f6fa;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            padding: 20px 0;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--secondary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: "🛡️";
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-menu li:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .nav-menu li.active {
+            background-color: var(--accent-color);
+        }
+
+        .submenu {
+            list-style: none;
+            padding-left: 20px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .submenu.show {
+            display: block;
+        }
+
+        .submenu li {
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--light-text);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+        }
+
+        .left-content {
+            flex: 1;
+        }
+
+        .right-sidebar {
+            width: 300px;
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .search-bar {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .search-bar h3 {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .info-card h4 {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .ip-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .ip-list li {
+            padding: 5px 0;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .bonus-card {
+            background-color: var(--accent-color);
+            color: rgb(123, 41, 41);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .bonus-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .bonus-amount {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .claim-btn {
+            background-color: white;
+            color: var(--accent-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .claim-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .protection-card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .protection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .protection-status {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--success-color);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 80%;
+            transition: width 0.5s ease;
+        }
+
+        .issues-list {
+            margin-top: 15px;
+        }
+
+        .issue-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .issue-name {
+            color: #7f8c8d;
+        }
+
+        .issue-value {
+            font-weight: bold;
+        }
+
+        .overview-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .overview-link:hover {
+            text-decoration: underline;
+        }
+
+        .stats-card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stats-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stats-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* Right Sidebar Profile */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .profile-info h3 {
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        .activity-title {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #7f8c8d;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f1f1f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .activity-details h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .activity-details p {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        /* Chart styles */
+        .chart-container {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart {
+            height: 200px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            display: flex;
+            align-items: flex-end;
+            padding: 10px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background-color: var(--accent-color);
+            margin: 0 5px;
+            border-radius: 3px 3px 0 0;
+            position: relative;
+            transition: height 0.5s ease;
+        }
+
+        .chart-bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .chart-label {
+            flex: 1;
+            text-align: center;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">CyberX</div>
+        <ul class="nav-menu">
+            <li class="active">Home</li>
+            <li>Affiliates</li>
+            <li id="monitoring">ID Monitoring ▼</li>
+            <ul class="submenu" id="monitoring-submenu">
+                <li>Distributed tracing</li>
+                <li>Errors</li>
+                <li>Alert conditions</li>
+            </ul>
+            <li>Database</li>
+            <li>Apps</li>
+            <li>Alert</li>
+            <li>Integration</li>
+            <li>Log out</li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <div class="left-content">
+                <div class="search-bar">
+                    <h3>Search project, folder or file</h3>
+                    <input type="text" class="search-input" placeholder="Search...">
+                    
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h4>Local name</h4>
+                            <p>WINPQR-24</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>Registered On</h4>
+                            <p>2025-01-02 20:00 PM</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>Scheduled Assets</h4>
+                            <p>131 (Subdomain - 5)</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>Agent</h4>
+                            <p>v1.0.0.8</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h4>IP Conflicts Report</h4>
+                        <ul class="ip-list">
+                            <li>Private IP</li>
+                            <li>Integrated IP to Address</li>
+                            <li>Public IP</li>
+                            <li>IP Service Provider</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bonus-card">
+                    <h3>Bonus of the month</h3>
+                    <div class="bonus-amount">You have Bonus ₹3000</div>
+                    <div>10 Free Spins</div>
+                    <button class="claim-btn">Claim Bonus</button>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Threat Detection Overview</h3>
+                        <span>Last 7 days</span>
+                    </div>
+                    <div class="chart" id="threatChart">
+                        <div class="chart-bar" style="height: 30%;" data-value="12"></div>
+                        <div class="chart-bar" style="height: 50%;" data-value="20"></div>
+                        <div class="chart-bar" style="height: 70%;" data-value="28"></div>
+                        <div class="chart-bar" style="height: 40%;" data-value="16"></div>
+                        <div class="chart-bar" style="height: 90%;" data-value="36"></div>
+                        <div class="chart-bar" style="height: 60%;" data-value="24"></div>
+                        <div class="chart-bar" style="height: 20%;" data-value="8"></div>
+                    </div>
+                    <div class="chart-labels">
+                        <div class="chart-label">Mon</div>
+                        <div class="chart-label">Tue</div>
+                        <div class="chart-label">Wed</div>
+                        <div class="chart-label">Thu</div>
+                        <div class="chart-label">Fri</div>
+                        <div class="chart-label">Sat</div>
+                        <div class="chart-label">Sun</div>
+                    </div>
+                </div>
+
+                <div class="protection-card">
+                    <div class="protection-header">
+                        <h3>Protection Status</h3>
+                        <div class="protection-status">80%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <h4>Average Protection</h4>
+                    <p>Check what you can do to be fully protected</p>
+                    <a href="#" class="overview-link">Overview</a>
+
+                    <div class="issues-list">
+                        <div class="issue-item">
+                            <span class="issue-name">262 issues total</span>
+                        </div>
+                        <div class="issue-item">
+                            <span class="issue-name">Simple</span>
+                            <span class="issue-value">50%</span>
+                        </div>
+                        <div class="issue-item">
+                            <span class="issue-name">Medium</span>
+                            <span class="issue-value">25%</span>
+                        </div>
+                        <div class="issue-item">
+                            <span class="issue-name">Complex</span>
+                            <span class="issue-value">10%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="stats-card">
+                        <div class="stats-label">Apps</div>
+                        <div class="stats-number">9.5k</div>
+                        <div class="stats-label">Total Files</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-label">Scanned Files</div>
+                        <div class="stats-number">8k</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="right-sidebar">
+                <div class="profile-header">
+                    <div class="profile-avatar">SD</div>
+                    <div class="profile-info">
+                        <h3>Subhajit Das</h3>
+                        <p>Security Admin</p>
+                    </div>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">24</div>
+                        <div class="stat-label">Projects</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">1.2k</div>
+                        <div class="stat-label">Scans</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Success</div>
+                    </div>
+                </div>
+
+                <h4 class="activity-title">Recent Activity</h4>
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <div class="activity-icon">🛡️</div>
+                        <div class="activity-details">
+                            <h4>Threat Detected</h4>
+                            <p>Malware scan completed</p>
+                            <p>2 hours ago</p>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">✅</div>
+                        <div class="activity-details">
+                            <h4>System Update</h4>
+                            <p>v1.0.0.8 installed</p>
+                            <p>5 hours ago</p>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">🔒</div>
+                        <div class="activity-details">
+                            <h4>Security Patch</h4>
+                            <p>Firewall rules updated</p>
+                            <p>Yesterday</p>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">📊</div>
+                        <div class="activity-details">
+                            <h4>Report Generated</h4>
+                            <p>Weekly security report</p>
+                            <p>2 days ago</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle submenu
+        document.getElementById('monitoring').addEventListener('click', function() {
+            const submenu = document.getElementById('monitoring-submenu');
+            submenu.classList.toggle('show');
+            
+            // Toggle arrow icon
+            if (submenu.classList.contains('show')) {
+                this.innerHTML = 'ID Monitoring ▲';
+            } else {
+                this.innerHTML = 'ID Monitoring ▼';
+            }
+        });
+
+        // Claim bonus button
+        const claimBtn = document.querySelector('.claim-btn');
+        claimBtn.addEventListener('click', function() {
+            alert('Bonus claimed successfully!');
+            this.textContent = 'Bonus Claimed!';
+            this.style.backgroundColor = '#2ecc71';
+            this.style.color = 'white';
+            this.disabled = true;
+        });
+
+        // Animate chart bars on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const bars = document.querySelectorAll('.chart-bar');
+            bars.forEach(bar => {
+                const targetHeight = bar.style.height;
+                bar.style.height = '0%';
+                setTimeout(() => {
+                    bar.style.height = targetHeight;
+                }, 100);
+            });
+
+            // Animate progress bar
+            const progressFill = document.querySelector('.progress-fill');
+            setTimeout(() => {
+                progressFill.style.width = '80%';
+            }, 300);
+        });
+    </script>
+</body>
+</html>
